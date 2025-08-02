@@ -1,0 +1,46 @@
+-- Session Feedback table for ratings and notes
+CREATE TABLE session_feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    session_id INTEGER NOT NULL,
+    control_rating INTEGER, -- 1-5 stars or 0-100
+    power_rating INTEGER,
+    durability_rating INTEGER, 
+    spin_rating INTEGER,
+    feel_rating INTEGER,
+    comfort_rating INTEGER,
+    notes TEXT,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+    FOREIGN KEY (session_id) REFERENCES stringing_sessions(id) ON DELETE CASCADE
+);
+
+-- Insert feedback for a session
+insertFeedback:
+INSERT INTO session_feedback (
+    session_id, control_rating, power_rating, durability_rating, spin_rating,
+    feel_rating, comfort_rating, notes, created_at, updated_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Update feedback for a session
+updateFeedback:
+UPDATE session_feedback 
+SET control_rating = ?, power_rating = ?, durability_rating = ?, spin_rating = ?,
+    feel_rating = ?, comfort_rating = ?, notes = ?, updated_at = ?
+WHERE session_id = ?;
+
+-- Get feedback by session ID
+getFeedbackBySessionId:
+SELECT * FROM session_feedback 
+WHERE session_id = ?;
+
+-- Delete feedback for a session
+deleteFeedbackBySessionId:
+DELETE FROM session_feedback 
+WHERE session_id = ?;
+
+-- Get all feedback with session info
+getAllFeedbackWithSessions:
+SELECT sf.*, ss.date_strung, ss.main_string_id, ss.cross_string_id 
+FROM session_feedback sf
+JOIN stringing_sessions ss ON sf.session_id = ss.id
+ORDER BY ss.date_strung DESC;

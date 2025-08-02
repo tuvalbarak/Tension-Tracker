@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.tuv.tensiontracker.data-release-14:/animator/fragment_close_exit.xml",
+        "source": "com.tuv.tensiontracker.data-fragment-1.5.1-2:/animator/fragment_close_exit.xml"
+    },
+    {
+        "merged": "com.tuv.tensiontracker.data-release-14:/animator/fragment_fade_exit.xml",
+        "source": "com.tuv.tensiontracker.data-fragment-1.5.1-2:/animator/fragment_fade_exit.xml"
+    },
+    {
+        "merged": "com.tuv.tensiontracker.data-release-14:/animator/fragment_open_exit.xml",
+        "source": "com.tuv.tensiontracker.data-fragment-1.5.1-2:/animator/fragment_open_exit.xml"
+    },
+    {
+        "merged": "com.tuv.tensiontracker.data-release-14:/animator/fragment_close_enter.xml",
+        "source": "com.tuv.tensiontracker.data-fragment-1.5.1-2:/animator/fragment_close_enter.xml"
+    },
+    {
+        "merged": "com.tuv.tensiontracker.data-release-14:/animator/fragment_fade_enter.xml",
+        "source": "com.tuv.tensiontracker.data-fragment-1.5.1-2:/animator/fragment_fade_enter.xml"
+    },
+    {
+        "merged": "com.tuv.tensiontracker.data-release-14:/animator/fragment_open_enter.xml",
+        "source": "com.tuv.tensiontracker.data-fragment-1.5.1-2:/animator/fragment_open_enter.xml"
+    }
+]

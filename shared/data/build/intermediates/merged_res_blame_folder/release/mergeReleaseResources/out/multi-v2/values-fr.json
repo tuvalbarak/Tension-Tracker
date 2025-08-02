@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.tuv.tensiontracker.data-mergeReleaseResources-12:/values-fr/values-fr.xml",
+            "map": [
+                {
+                    "source": "/Users/tuvalbarak/.gradle/caches/8.13/transforms/038719e25d6adb0e0940f869ee9e4056/transformed/core-1.8.0/res/values-fr/values-fr.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "com.tuv.tensiontracker.data-release-14:/values-fr/values-fr.xml",
+            "map": [
+                {
+                    "source": "/Users/tuvalbarak/.gradle/caches/8.13/transforms/038719e25d6adb0e0940f869ee9e4056/transformed/core-1.8.0/res/values-fr/values-fr.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    }
+                }
+            ]
+        }
+    ]
+}

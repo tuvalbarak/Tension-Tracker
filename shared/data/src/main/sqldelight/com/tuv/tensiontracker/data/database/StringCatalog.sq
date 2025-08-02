@@ -1,0 +1,74 @@
+-- String Catalog table for hardcoded string database
+CREATE TABLE string_catalog (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    brand TEXT NOT NULL,
+    type TEXT NOT NULL, -- "Poly", "Multi", "Gut", "Synthetic", "Hybrid"
+    gauge_mm REAL, -- String gauge in millimeters
+    construction TEXT, -- "Monofilament", "Multifilament", etc.
+    notes TEXT,
+    price_min REAL,
+    price_max REAL,
+    is_active INTEGER NOT NULL DEFAULT 1 -- 1 for active, 0 for discontinued
+);
+
+-- Insert string into catalog
+insertString:
+INSERT INTO string_catalog (
+    name, brand, type, gauge_mm, construction, notes, price_min, price_max, is_active
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Get all active strings
+getAllActiveStrings:
+SELECT * FROM string_catalog 
+WHERE is_active = 1
+ORDER BY brand, name;
+
+-- Get strings by brand
+getStringsByBrand:
+SELECT * FROM string_catalog 
+WHERE brand = ? AND is_active = 1
+ORDER BY name;
+
+-- Get strings by type
+getStringsByType:
+SELECT * FROM string_catalog 
+WHERE type = ? AND is_active = 1
+ORDER BY brand, name;
+
+-- Search strings by name or brand
+searchStrings:
+SELECT * FROM string_catalog 
+WHERE (name LIKE '%' || ? || '%' OR brand LIKE '%' || ? || '%') 
+AND is_active = 1
+ORDER BY brand, name;
+
+-- Get string by ID
+getStringById:
+SELECT * FROM string_catalog 
+WHERE id = ?;
+
+-- Get all brands
+getAllBrands:
+SELECT DISTINCT brand FROM string_catalog 
+WHERE is_active = 1
+ORDER BY brand;
+
+-- Get all string types
+getAllTypes:
+SELECT DISTINCT type FROM string_catalog 
+WHERE is_active = 1
+ORDER BY type;
+
+-- Update string
+updateString:
+UPDATE string_catalog 
+SET name = ?, brand = ?, type = ?, gauge_mm = ?, construction = ?, 
+    notes = ?, price_min = ?, price_max = ?, is_active = ?
+WHERE id = ?;
+
+-- Deactivate string (mark as discontinued)
+deactivateString:
+UPDATE string_catalog 
+SET is_active = 0
+WHERE id = ?;

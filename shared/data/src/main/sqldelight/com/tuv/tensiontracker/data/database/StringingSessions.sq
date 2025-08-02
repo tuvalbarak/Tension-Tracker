@@ -1,0 +1,64 @@
+-- Stringing Sessions table
+CREATE TABLE stringing_sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date_strung INTEGER NOT NULL, -- Unix timestamp
+    main_string_id INTEGER NOT NULL,
+    cross_string_id INTEGER, -- Optional for hybrid setups
+    main_tension_value REAL NOT NULL,
+    main_tension_unit TEXT NOT NULL, -- "kg" or "lbs"
+    cross_tension_value REAL,
+    cross_tension_unit TEXT,
+    price_paid REAL,
+    location_installed TEXT,
+    hours_until_break REAL,
+    hours_until_dead REAL,
+    created_at INTEGER NOT NULL, -- Unix timestamp
+    updated_at INTEGER NOT NULL  -- Unix timestamp
+);
+
+-- Insert a new stringing session
+insertSession:
+INSERT INTO stringing_sessions (
+    date_strung, main_string_id, cross_string_id, main_tension_value, main_tension_unit,
+    cross_tension_value, cross_tension_unit, price_paid, location_installed,
+    hours_until_break, hours_until_dead, created_at, updated_at
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+-- Update an existing stringing session
+updateSession:
+UPDATE stringing_sessions 
+SET date_strung = ?, main_string_id = ?, cross_string_id = ?, main_tension_value = ?,
+    main_tension_unit = ?, cross_tension_value = ?, cross_tension_unit = ?, price_paid = ?,
+    location_installed = ?, hours_until_break = ?, hours_until_dead = ?, updated_at = ?
+WHERE id = ?;
+
+-- Get all sessions ordered by date (newest first)
+getAllSessions:
+SELECT * FROM stringing_sessions 
+ORDER BY date_strung DESC;
+
+-- Get session by ID
+getSessionById:
+SELECT * FROM stringing_sessions 
+WHERE id = ?;
+
+-- Get sessions by string ID
+getSessionsByString:
+SELECT * FROM stringing_sessions 
+WHERE main_string_id = ? OR cross_string_id = ?
+ORDER BY date_strung DESC;
+
+-- Get sessions by location
+getSessionsByLocation:
+SELECT * FROM stringing_sessions 
+WHERE location_installed = ?
+ORDER BY date_strung DESC;
+
+-- Delete session
+deleteSession:
+DELETE FROM stringing_sessions 
+WHERE id = ?;
+
+-- Get latest session ID
+getLastInsertedSessionId:
+SELECT last_insert_rowid();

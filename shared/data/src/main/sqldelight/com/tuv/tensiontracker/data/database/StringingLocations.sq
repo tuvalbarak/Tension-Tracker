@@ -1,0 +1,38 @@
+-- Stringing Locations table for autocomplete
+CREATE TABLE stringing_locations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    location_name TEXT NOT NULL UNIQUE,
+    usage_count INTEGER NOT NULL DEFAULT 1,
+    last_used INTEGER NOT NULL, -- Unix timestamp
+    created_at INTEGER NOT NULL
+);
+
+-- Insert new location or increment usage count
+insertOrIncrementLocation:
+INSERT INTO stringing_locations (location_name, usage_count, last_used, created_at)
+VALUES (?, 1, ?, ?)
+ON CONFLICT(location_name) DO UPDATE SET 
+    usage_count = usage_count + 1,
+    last_used = excluded.last_used;
+
+-- Get all locations ordered by usage count and recency
+getAllLocations:
+SELECT * FROM stringing_locations 
+ORDER BY usage_count DESC, last_used DESC;
+
+-- Get locations matching a search query
+searchLocations:
+SELECT * FROM stringing_locations 
+WHERE location_name LIKE '%' || ? || '%'
+ORDER BY usage_count DESC, last_used DESC;
+
+-- Get top N frequently used locations
+getTopLocations:
+SELECT * FROM stringing_locations 
+ORDER BY usage_count DESC, last_used DESC
+LIMIT ?;
+
+-- Delete location
+deleteLocation:
+DELETE FROM stringing_locations 
+WHERE id = ?;

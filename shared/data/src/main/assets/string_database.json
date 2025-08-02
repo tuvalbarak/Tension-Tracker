@@ -1,0 +1,204 @@
+{
+  "strings": [
+    {
+      "name": "Luxilon ALU Power",
+      "brand": "Luxilon",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Most popular polyester string on tour. Excellent control and durability.",
+      "price_min": 12.0,
+      "price_max": 18.0
+    },
+    {
+      "name": "Luxilon ALU Power Rough",
+      "brand": "Luxilon",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Textured version of ALU Power for extra spin potential.",
+      "price_min": 13.0,
+      "price_max": 19.0
+    },
+    {
+      "name": "Babolat RPM Blast",
+      "brand": "Babolat",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Great spin and control. Popular with baseline players.",
+      "price_min": 10.0,
+      "price_max": 16.0
+    },
+    {
+      "name": "Solinco Hyper-G",
+      "brand": "Solinco",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Excellent control and spin with good feel. Great value.",
+      "price_min": 8.0,
+      "price_max": 14.0
+    },
+    {
+      "name": "Wilson Natural Gut",
+      "brand": "Wilson",
+      "type": "Gut",
+      "gauge_mm": 1.30,
+      "construction": "Natural",
+      "notes": "Premium natural gut string. Excellent feel and power.",
+      "price_min": 40.0,
+      "price_max": 55.0
+    },
+    {
+      "name": "Babolat VS Touch",
+      "brand": "Babolat",
+      "type": "Gut",
+      "gauge_mm": 1.30,
+      "construction": "Natural",
+      "notes": "High-quality natural gut with great feel and power.",
+      "price_min": 35.0,
+      "price_max": 50.0
+    },
+    {
+      "name": "Tecnifibre X-One Biphase",
+      "brand": "Tecnifibre",
+      "type": "Multi",
+      "gauge_mm": 1.30,
+      "construction": "Multifilament",
+      "notes": "Premium multifilament with excellent comfort and feel.",
+      "price_min": 15.0,
+      "price_max": 22.0
+    },
+    {
+      "name": "Wilson NXT",
+      "brand": "Wilson",
+      "type": "Multi",
+      "gauge_mm": 1.30,
+      "construction": "Multifilament",
+      "notes": "Popular multifilament string with good comfort and power.",
+      "price_min": 12.0,
+      "price_max": 18.0
+    },
+    {
+      "name": "Prince Synthetic Gut",
+      "brand": "Prince",
+      "type": "Synthetic",
+      "gauge_mm": 1.30,
+      "construction": "Monofilament",
+      "notes": "Budget-friendly synthetic gut with decent all-around performance.",
+      "price_min": 6.0,
+      "price_max": 10.0
+    },
+    {
+      "name": "Wilson Synthetic Gut Power",
+      "brand": "Wilson",
+      "type": "Synthetic",
+      "gauge_mm": 1.30,
+      "construction": "Monofilament",
+      "notes": "Good value synthetic gut with enhanced power.",
+      "price_min": 7.0,
+      "price_max": 12.0
+    },
+    {
+      "name": "Luxilon Element",
+      "brand": "Luxilon",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Softer polyester with good comfort and spin.",
+      "price_min": 11.0,
+      "price_max": 17.0
+    },
+    {
+      "name": "Head Lynx",
+      "brand": "Head",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Excellent spin potential with good control.",
+      "price_min": 9.0,
+      "price_max": 15.0
+    },
+    {
+      "name": "Yonex Poly Tour Pro",
+      "brand": "Yonex",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Great control and durability with good spin.",
+      "price_min": 10.0,
+      "price_max": 16.0
+    },
+    {
+      "name": "Tecnifibre Triax",
+      "brand": "Tecnifibre",
+      "type": "Multi",
+      "gauge_mm": 1.30,
+      "construction": "Multifilament",
+      "notes": "Comfortable multifilament with good power and feel.",
+      "price_min": 13.0,
+      "price_max": 19.0
+    },
+    {
+      "name": "Babolat Xcel",
+      "brand": "Babolat",
+      "type": "Multi",
+      "gauge_mm": 1.30,
+      "construction": "Multifilament",
+      "notes": "Premium multifilament with excellent comfort.",
+      "price_min": 14.0,
+      "price_max": 20.0
+    },
+    {
+      "name": "Volkl Cyclone",
+      "brand": "Volkl",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Great value polyester with excellent spin and control.",
+      "price_min": 8.0,
+      "price_max": 13.0
+    },
+    {
+      "name": "Kirschbaum Pro Line II",
+      "brand": "Kirschbaum",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Quality German-made polyester with good control.",
+      "price_min": 9.0,
+      "price_max": 14.0
+    },
+    {
+      "name": "Gamma Zo Tour",
+      "brand": "Gamma",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Soft polyester with good feel and spin.",
+      "price_min": 7.0,
+      "price_max": 12.0
+    },
+    {
+      "name": "Tecnifibre Black Code",
+      "brand": "Tecnifibre",
+      "type": "Poly",
+      "gauge_mm": 1.24,
+      "construction": "Monofilament",
+      "notes": "Excellent spin and control with good durability.",
+      "price_min": 11.0,
+      "price_max": 17.0
+    },
+    {
+      "name": "Solinco Tour Bite",
+      "brand": "Solinco",
+      "type": "Poly",
+      "gauge_mm": 1.25,
+      "construction": "Monofilament",
+      "notes": "Great spin and bite with good control.",
+      "price_min": 8.0,
+      "price_max": 14.0
+    }
+  ]
+}
