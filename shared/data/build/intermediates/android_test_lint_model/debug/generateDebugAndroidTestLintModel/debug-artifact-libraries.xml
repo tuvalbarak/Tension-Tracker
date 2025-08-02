@@ -1,9 +1,9 @@
 <libraries>
   <library
       name=":@@:shared:data::debug"
-      jars="/Users/tuvalbarak/.gradle/caches/8.13/transforms/40158f6ceb6368d8d1b1c49b2a2b66b0/transformed/out/jars/classes.jar:/Users/tuvalbarak/.gradle/caches/8.13/transforms/40158f6ceb6368d8d1b1c49b2a2b66b0/transformed/out/jars/libs/R.jar"
+      jars="/Users/tuvalbarak/.gradle/caches/8.13/transforms/16f9196321a24d376f3b7f56d09b1cf4/transformed/out/jars/classes.jar:/Users/tuvalbarak/.gradle/caches/8.13/transforms/16f9196321a24d376f3b7f56d09b1cf4/transformed/out/jars/libs/R.jar"
       resolved="Tension Tracker.shared:data:unspecified"
-      folder="/Users/tuvalbarak/.gradle/caches/8.13/transforms/40158f6ceb6368d8d1b1c49b2a2b66b0/transformed/out"
+      folder="/Users/tuvalbarak/.gradle/caches/8.13/transforms/16f9196321a24d376f3b7f56d09b1cf4/transformed/out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
@@ -35,9 +35,9 @@
       resolved="app.cash.sqldelight:primitive-adapters-jvm:2.0.2"/>
   <library
       name=":@@:shared:domain::debug"
-      jars="/Users/tuvalbarak/.gradle/caches/8.13/transforms/611a477e0c12b5bcd49f30e3007a770b/transformed/out/jars/classes.jar:/Users/tuvalbarak/.gradle/caches/8.13/transforms/611a477e0c12b5bcd49f30e3007a770b/transformed/out/jars/libs/R.jar"
+      jars="/Users/tuvalbarak/.gradle/caches/8.13/transforms/6523f665958c7ed118764f726b1782d8/transformed/out/jars/classes.jar:/Users/tuvalbarak/.gradle/caches/8.13/transforms/6523f665958c7ed118764f726b1782d8/transformed/out/jars/libs/R.jar"
       resolved="Tension Tracker.shared:domain:unspecified"
-      folder="/Users/tuvalbarak/.gradle/caches/8.13/transforms/611a477e0c12b5bcd49f30e3007a770b/transformed/out"
+      folder="/Users/tuvalbarak/.gradle/caches/8.13/transforms/6523f665958c7ed118764f726b1782d8/transformed/out"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"

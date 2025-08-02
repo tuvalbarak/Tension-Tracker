@@ -4,12 +4,23 @@ import com.tuv.tensiontracker.domain.model.StringModel
 import com.tuv.tensiontracker.domain.model.StringType
 import com.tuv.tensiontracker.domain.repository.StringCatalogRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetStringCatalogUseCase(
+class GetStringCatalogUseCase @Inject constructor(
     private val stringCatalogRepository: StringCatalogRepository
 ) {
+    
     fun getAllStrings(): Flow<List<StringModel>> {
         return stringCatalogRepository.getAllActiveStrings()
+    }
+    
+    suspend fun ensureInitialized() {
+        try {
+            stringCatalogRepository.initializeFromAssets()
+        } catch (e: Exception) {
+            println("Failed to initialize string catalog: ${e.message}")
+            e.printStackTrace()
+        }
     }
     
     suspend fun getStringsByType(type: StringType): List<StringModel> {

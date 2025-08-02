@@ -46,6 +46,7 @@ fun HomeScreen(
     onNavigateToHistory: () -> Unit,
     onNavigateToRecommendations: () -> Unit,
     onNavigateToSettings: () -> Unit,
+    onNavigateToSessionDetails: (Long) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -123,11 +124,25 @@ fun HomeScreen(
             // Recent Sessions Section
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Recent Sessions",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Recent Sessions",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    
+                    if (uiState.recentSessions.isNotEmpty()) {
+                        androidx.compose.material3.TextButton(
+                            onClick = onNavigateToHistory
+                        ) {
+                            Text("View All")
+                        }
+                    }
+                }
             }
             
             if (uiState.recentSessions.isEmpty()) {
@@ -159,7 +174,7 @@ fun HomeScreen(
                 items(uiState.recentSessions) { session ->
                     RecentSessionCard(
                         session = session,
-                        onClick = { /* TODO: Navigate to details */ }
+                        onClick = { onNavigateToSessionDetails(session.session.id) }
                     )
                 }
             }
@@ -207,7 +222,11 @@ private fun RecentSessionCard(
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -221,30 +240,72 @@ private fun RecentSessionCard(
                     Text(
                         text = session.stringSetupDescription,
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1
                     )
                     Text(
                         text = session.tensionDescription,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                    
+                    // Show location if available
+                    session.session.locationInstalled?.let { location ->
+                        Text(
+                            text = "📍 $location",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "${session.session.daysSinceStringing} days ago",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = when (val days = session.session.daysSinceStringing) {
+                            0L -> "Today"
+                            1L -> "Yesterday"
+                            else -> "$days days ago"
+                        },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    
+                    // Show price if available
+                    session.session.pricePaid?.let { price ->
+                        Text(
+                            text = "$${"%.0f".format(price)}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
             }
             
+            // Show feedback if available
             session.feedback?.let { feedback ->
-                Spacer(modifier = Modifier.height(8.dp))
-                feedback.averageRating?.let { rating ->
-                    Text(
-                        text = "Rating: ${"%.1f".format(rating)}/5",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                if (feedback.hasAnyRating) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        feedback.averageRating?.let { rating ->
+                            Text(
+                                text = "${"%.1f".format(rating)}/5 ⭐",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        
+                        if (!feedback.notes.isNullOrBlank()) {
+                            Text(
+                                text = "📝 Notes",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
             }
         }

@@ -72,3 +72,7 @@ deactivateString:
 UPDATE string_catalog 
 SET is_active = 0
 WHERE id = ?;
+
+-- Delete all strings (for development/testing)
+deleteAllStrings:
+DELETE FROM string_catalog;

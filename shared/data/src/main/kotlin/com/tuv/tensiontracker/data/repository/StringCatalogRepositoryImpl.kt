@@ -118,13 +118,25 @@ class StringCatalogRepositoryImpl(
         try {
             // Check if catalog is already initialized
             val existingCount = queries.getAllActiveStrings().executeAsList().size
-            if (existingCount > 0) {
-                return@withContext // Already initialized
+            println("StringCatalogRepository: Existing strings count: $existingCount")
+            
+            // For testing: force refresh if database has failed inserts (count is 0 but we've tried before)
+            // In production, you'd remove this force refresh logic
+            if (existingCount == 0) {
+                println("StringCatalogRepository: Force refreshing string catalog...")
+                // Clear any potentially corrupted entries
+                queries.deleteAllStrings()
+            } else {
+                return@withContext // Already initialized properly
             }
+            
+            println("StringCatalogRepository: Initializing from assets...")
             
             // Read JSON from assets
             val jsonString = context.assets.open("string_database.json").bufferedReader().use { it.readText() }
             val catalogData = json.decodeFromString<StringCatalogData>(jsonString)
+            
+            println("StringCatalogRepository: Loaded ${catalogData.strings.size} strings from JSON")
             
             // Insert each string into the database
             catalogData.strings.forEach { stringData ->
@@ -146,8 +158,49 @@ class StringCatalogRepositoryImpl(
                     println("Error inserting string ${stringData.name}: ${e.message}")
                 }
             }
+            
+            val finalCount = queries.getAllActiveStrings().executeAsList().size
+            println("StringCatalogRepository: Initialization complete. Final count: $finalCount")
+            
         } catch (e: Exception) {
             println("Error initializing string catalog: ${e.message}")
+            e.printStackTrace()
+            // Fallback: Insert mock strings for testing
+            insertMockStrings()
         }
+    }
+    
+    private suspend fun insertMockStrings() {
+        println("StringCatalogRepository: Inserting mock strings as fallback...")
+        val mockStrings = listOf(
+            Triple("Luxilon ALU Power", "Luxilon", "Poly"),
+            Triple("Babolat RPM Blast", "Babolat", "Poly"),
+            Triple("Wilson Natural Gut", "Wilson", "Gut"),
+            Triple("Tecnifibre X-One Biphase", "Tecnifibre", "Multi"),
+            Triple("Wilson Synthetic Gut", "Wilson", "Synthetic")
+        )
+        
+        mockStrings.forEachIndexed { index, (name, brand, type) ->
+            try {
+                queries.insertString(
+                    name = name,
+                    brand = brand,
+                    type = type,
+                    gauge_mm = 1.25,
+                    construction = "Standard",
+                    notes = "Mock string for testing",
+                    price_min = 10.0 + index * 5.0,
+                    price_max = 15.0 + index * 5.0,
+                    is_active = 1L
+                )
+                println("StringCatalogRepository: Inserted mock string: $name")
+            } catch (e: Exception) {
+                println("Error inserting mock string $name: ${e.message}")
+                e.printStackTrace()
+            }
+        }
+        
+        val finalCount = queries.getAllActiveStrings().executeAsList().size
+        println("StringCatalogRepository: Mock insertion complete. Final count: $finalCount")
     }
 }

@@ -12,17 +12,12 @@ import javax.inject.Inject
 @HiltAndroidApp
 class TensionTrackerApplication : Application() {
     
-    @Inject
-    lateinit var stringCatalogRepository: StringCatalogRepository
-    
     private val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     
     override fun onCreate() {
         super.onCreate()
         
-        // Initialize string catalog from assets on first run
-        applicationScope.launch {
-            stringCatalogRepository.initializeFromAssets()
-        }
+        // Note: String catalog will be initialized when first accessed through repositories
+        // This avoids Hilt injection timing issues in Application.onCreate()
     }
 }

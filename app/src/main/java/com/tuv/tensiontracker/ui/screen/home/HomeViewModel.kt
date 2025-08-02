@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,9 +27,13 @@ class HomeViewModel @Inject constructor(
     
     private fun loadRecentSessions() {
         getSessionsWithDetailsUseCase()
-            .map { sessions -> sessions.take(5) } // Take only the 5 most recent
-            .map { recentSessions ->
-                _uiState.value.copy(
+            .map { sessions -> 
+                sessions
+                    .sortedByDescending { it.session.dateStrung } // Most recent first
+                    .take(5) // Take only the 5 most recent
+            }
+            .onEach { recentSessions ->
+                _uiState.value = _uiState.value.copy(
                     recentSessions = recentSessions,
                     isLoading = false
                 )

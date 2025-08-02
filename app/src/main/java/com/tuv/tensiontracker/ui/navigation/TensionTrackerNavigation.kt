@@ -26,7 +26,10 @@ fun TensionTrackerNavigation(navController: NavHostController) {
                 onNavigateToNewSession = { navController.navigate(Screen.NewSession.route) },
                 onNavigateToHistory = { navController.navigate(Screen.SessionHistory.route) },
                 onNavigateToRecommendations = { navController.navigate(Screen.Recommendations.route) },
-                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
+                onNavigateToSessionDetails = { sessionId ->
+                    navController.navigate(Screen.SessionDetails.createRoute(sessionId))
+                }
             )
         }
         

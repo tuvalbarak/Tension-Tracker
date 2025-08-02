@@ -329,6 +329,13 @@ public class StringCatalogQueries(
     }
   }
 
+  public fun deleteAllStrings() {
+    driver.execute(-1_161_561_915, """DELETE FROM string_catalog""", 0)
+    notifyQueries(-1_161_561_915) { emit ->
+      emit("string_catalog")
+    }
+  }
+
   private inner class GetStringsByBrandQuery<out T : Any>(
     public val brand: String,
     mapper: (SqlCursor) -> T,
