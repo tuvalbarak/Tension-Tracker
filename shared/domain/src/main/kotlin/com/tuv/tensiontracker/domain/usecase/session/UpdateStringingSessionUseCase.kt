@@ -3,8 +3,9 @@ package com.tuv.tensiontracker.domain.usecase.session
 import com.tuv.tensiontracker.domain.model.StringingSession
 import com.tuv.tensiontracker.domain.repository.StringingSessionRepository
 import com.tuv.tensiontracker.domain.repository.StringingLocationRepository
+import javax.inject.Inject
 
-class UpdateStringingSessionUseCase(
+class UpdateStringingSessionUseCase @Inject constructor(
     private val sessionRepository: StringingSessionRepository,
     private val locationRepository: StringingLocationRepository
 ) {
