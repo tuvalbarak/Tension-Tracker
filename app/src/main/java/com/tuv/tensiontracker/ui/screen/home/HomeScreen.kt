@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tuv.tensiontracker.domain.model.SessionWithDetails
+import com.tuv.tensiontracker.ui.utils.DateFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -261,11 +262,7 @@ private fun RecentSessionCard(
                 Spacer(modifier = Modifier.width(8.dp))
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
-                        text = when (val days = session.session.daysSinceStringing) {
-                            0L -> "Today"
-                            1L -> "Yesterday"
-                            else -> "$days days ago"
-                        },
+                        text = DateFormatter.formatRelativeDate(session.session.dateStrung),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

@@ -11,15 +11,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -48,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tuv.tensiontracker.domain.model.SessionWithDetails
 import com.tuv.tensiontracker.domain.model.StringType
+import com.tuv.tensiontracker.ui.utils.DateFormatter
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -90,7 +93,15 @@ fun SessionHistoryScreen(
                     // Sort menu
                     Box {
                         IconButton(onClick = { showSortMenu = true }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Sort")
+                            Icon(
+                                Icons.Default.Menu, 
+                                contentDescription = "Sort",
+                                tint = if (sortOrder != SortOrder.DATE_DESC) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                }
+                            )
                         }
                         
                         DropdownMenu(
@@ -99,7 +110,22 @@ fun SessionHistoryScreen(
                         ) {
                             SortOrder.entries.forEach { order ->
                                 DropdownMenuItem(
-                                    text = { Text(order.displayName) },
+                                    text = { 
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(order.displayName)
+                                            if (sortOrder == order) {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Icon(
+                                                    Icons.Default.Check,
+                                                    contentDescription = "Selected",
+                                                    tint = MaterialTheme.colorScheme.primary,
+                                                    modifier = Modifier.size(16.dp)
+                                                )
+                                            }
+                                        }
+                                    },
                                     onClick = {
                                         viewModel.updateSortOrder(order)
                                         showSortMenu = false
@@ -281,7 +307,7 @@ private fun SessionCard(
                 }
                 
                 Text(
-                    text = formatDateShort(session.dateStrung),
+                    text = DateFormatter.formatDateShort(session.dateStrung),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -381,7 +407,3 @@ private fun EmptyState(
     }
 }
 
-private fun formatDateShort(instant: kotlinx.datetime.Instant): String {
-    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-    return "${localDateTime.monthNumber}/${localDateTime.dayOfMonth}"
-}

@@ -98,7 +98,6 @@ class EditSessionViewModel @Inject constructor(
                     pricePaidInput = session.pricePaid?.toString() ?: "",
                     locationInput = session.locationInstalled ?: "",
                     hoursUntilBreakInput = session.hoursUntilBreak?.toString() ?: "",
-                    hoursUntilDeadInput = session.hoursUntilDead?.toString() ?: "",
                     recentLocations = recentLocations
                 )
                 
@@ -151,9 +150,7 @@ class EditSessionViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(hoursUntilBreakInput = hours)
     }
     
-    fun updateHoursUntilDead(hours: String) {
-        _uiState.value = _uiState.value.copy(hoursUntilDeadInput = hours)
-    }
+
     
     fun updateSession(onSuccess: () -> Unit) {
         val state = _uiState.value
@@ -190,7 +187,6 @@ class EditSessionViewModel @Inject constructor(
                     pricePaid = state.pricePaidInput.toDoubleOrNull(),
                     locationInstalled = state.locationInput.takeIf { it.isNotBlank() },
                     hoursUntilBreak = state.hoursUntilBreakInput.toDoubleOrNull(),
-                    hoursUntilDead = state.hoursUntilDeadInput.toDoubleOrNull(),
                     updatedAt = Clock.System.now()
                 )
                 
@@ -250,12 +246,7 @@ class EditSessionViewModel @Inject constructor(
             }
         }
         
-        if (state.hoursUntilDeadInput.isNotBlank()) {
-            val hours = state.hoursUntilDeadInput.toDoubleOrNull()
-            if (hours == null || hours < 0) {
-                errors.add(EditSessionValidationError.HOURS_UNTIL_DEAD_INVALID)
-            }
-        }
+
         
         return errors
     }
@@ -281,7 +272,6 @@ data class EditSessionUiState(
     val locationInput: String = "",
     val recentLocations: List<StringingLocation> = emptyList(),
     val hoursUntilBreakInput: String = "",
-    val hoursUntilDeadInput: String = "",
     val isSaving: Boolean = false,
     val validationErrors: Set<EditSessionValidationError> = emptySet(),
     val errorMessage: String? = null
@@ -293,6 +283,5 @@ enum class EditSessionValidationError {
     MAIN_TENSION_INVALID,
     CROSS_TENSION_INVALID,
     PRICE_INVALID,
-    HOURS_UNTIL_BREAK_INVALID,
-    HOURS_UNTIL_DEAD_INVALID
+    HOURS_UNTIL_BREAK_INVALID
 }

@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tuv.tensiontracker.domain.model.SessionWithDetails
 import com.tuv.tensiontracker.domain.model.UserPreferences
+import com.tuv.tensiontracker.ui.utils.DateFormatter
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -288,12 +289,9 @@ private fun TensionInfoSection(
 @Composable
 private fun SessionInfoSection(sessionWithDetails: SessionWithDetails) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        val dateStrung = sessionWithDetails.session.dateStrung
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-        
         InfoRow(
             label = "Date Strung",
-            value = "${dateStrung.dayOfMonth}/${dateStrung.monthNumber}/${dateStrung.year}"
+            value = DateFormatter.formatDateWithYear(sessionWithDetails.session.dateStrung)
         )
         
         InfoRow(

@@ -1,5 +1,6 @@
 package com.tuv.tensiontracker.ui.screen.session
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,7 +35,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,6 +52,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tuv.tensiontracker.domain.model.StringModel
+import com.tuv.tensiontracker.ui.utils.DateFormatter
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -60,6 +66,7 @@ fun NewSessionScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    var showDatePicker by remember { mutableStateOf(false) }
     
     // Show error message
     LaunchedEffect(uiState.errorMessage) {
@@ -108,11 +115,26 @@ fun NewSessionScreen(
             // Date Section
             item {
                 FormSection(title = "Date & Setup") {
-                    Text(
-                        text = "Strung on: ${formatDate(uiState.dateStrung)}",
-                        style = MaterialTheme.typography.bodyLarge
+                    OutlinedTextField(
+                        value = DateFormatter.formatDate(uiState.dateStrung),
+                        onValueChange = { },
+                        label = { Text("Date Strung") },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showDatePicker = true },
+                        readOnly = true,
+                        trailingIcon = {
+                            IconButton(onClick = { showDatePicker = true }) {
+                                Text(
+                                    text = "📅",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
+                        },
+                        supportingText = {
+                            Text("Tap to select a different date")
+                        }
                     )
-                    // TODO: Add DatePicker when user taps
                 }
             }
             
@@ -130,11 +152,15 @@ fun NewSessionScreen(
                         )
                         
                         Row(
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { viewModel.toggleIsHybrid() }
+                                .padding(4.dp)
                         ) {
                             Checkbox(
                                 checked = uiState.isHybrid,
-                                onCheckedChange = { viewModel.toggleIsHybrid() }
+                                onCheckedChange = null // Handled by row click
                             )
                             Text(
                                 text = "Hybrid setup (different cross string)",
@@ -207,9 +233,18 @@ fun NewSessionScreen(
                             modifier = Modifier.fillMaxWidth(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             isError = NewSessionValidationError.PRICE_INVALID in uiState.validationErrors,
+                            leadingIcon = {
+                                Text(
+                                    text = "$",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            },
                             supportingText = {
                                 if (NewSessionValidationError.PRICE_INVALID in uiState.validationErrors) {
                                     Text("Please enter a valid amount")
+                                } else {
+                                    Text("Enter the price paid for stringing (optional)")
                                 }
                             }
                         )
@@ -245,25 +280,26 @@ fun NewSessionScreen(
                             }
                         )
                         
-                        OutlinedTextField(
-                            value = uiState.hoursUntilDeadInput,
-                            onValueChange = viewModel::updateHoursUntilDead,
-                            label = { Text("Hours Until Dead") },
-                            modifier = Modifier.fillMaxWidth(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            isError = NewSessionValidationError.HOURS_UNTIL_DEAD_INVALID in uiState.validationErrors,
-                            supportingText = {
-                                if (NewSessionValidationError.HOURS_UNTIL_DEAD_INVALID in uiState.validationErrors) {
-                                    Text("Please enter a valid number")
-                                } else {
-                                    Text("Hours of play before strings felt dead")
-                                }
-                            }
-                        )
+
                     }
                 }
             }
         }
+    }
+    
+    // Date Picker Dialog
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDateSelected = { selectedDateMillis ->
+                selectedDateMillis?.let { millis ->
+                    val instant = Instant.fromEpochMilliseconds(millis)
+                    viewModel.updateDateStrung(instant)
+                }
+                showDatePicker = false
+            },
+            onDismiss = { showDatePicker = false },
+            initialDate = uiState.dateStrung
+        )
     }
 }
 
@@ -387,7 +423,33 @@ private fun StringDropdown(
     }
 }
 
-private fun formatDate(instant: Instant): String {
-    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-    return "${localDateTime.date}"
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DatePickerDialog(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit,
+    initialDate: Instant
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = initialDate.toEpochMilliseconds()
+    )
+    
+    androidx.compose.material3.DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = { onDateSelected(datePickerState.selectedDateMillis) }
+            ) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
+    }
 }
+

@@ -115,9 +115,7 @@ class NewSessionViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(hoursUntilBreakInput = hours)
     }
     
-    fun updateHoursUntilDead(hours: String) {
-        _uiState.value = _uiState.value.copy(hoursUntilDeadInput = hours)
-    }
+
     
     fun toggleIsHybrid() {
         _uiState.value = _uiState.value.copy(
@@ -161,11 +159,7 @@ class NewSessionViewModel @Inject constructor(
             }
         }
         
-        if (state.hoursUntilDeadInput.isNotBlank()) {
-            state.hoursUntilDeadInput.toDoubleOrNull() ?: run {
-                errors.add(NewSessionValidationError.HOURS_UNTIL_DEAD_INVALID)
-            }
-        }
+
         
         return errors
     }
@@ -201,8 +195,7 @@ class NewSessionViewModel @Inject constructor(
                     dateStrung = state.dateStrung,
                     pricePaid = state.pricePaidInput.toDoubleOrNull(),
                     locationInstalled = state.locationInput.takeIf { it.isNotBlank() },
-                    hoursUntilBreak = state.hoursUntilBreakInput.toDoubleOrNull(),
-                    hoursUntilDead = state.hoursUntilDeadInput.toDoubleOrNull()
+                    hoursUntilBreak = state.hoursUntilBreakInput.toDoubleOrNull()
                 )
                 
                 createSessionUseCase(session).getOrThrow()
@@ -238,7 +231,6 @@ data class NewSessionUiState(
     val locationInput: String = "",
     val recentLocations: List<StringingLocation> = emptyList(),
     val hoursUntilBreakInput: String = "",
-    val hoursUntilDeadInput: String = "",
     val isSaving: Boolean = false,
     val validationErrors: Set<NewSessionValidationError> = emptySet(),
     val errorMessage: String? = null
@@ -250,6 +242,5 @@ enum class NewSessionValidationError {
     MAIN_TENSION_INVALID,
     CROSS_TENSION_INVALID,
     PRICE_INVALID,
-    HOURS_UNTIL_BREAK_INVALID,
-    HOURS_UNTIL_DEAD_INVALID
+    HOURS_UNTIL_BREAK_INVALID
 }

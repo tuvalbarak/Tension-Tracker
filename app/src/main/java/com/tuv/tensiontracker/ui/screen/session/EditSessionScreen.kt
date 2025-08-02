@@ -21,6 +21,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,7 +34,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,6 +51,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tuv.tensiontracker.domain.model.StringModel
+import com.tuv.tensiontracker.ui.utils.DateFormatter
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -60,6 +65,7 @@ fun EditSessionScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    var showDatePicker by remember { mutableStateOf(false) }
     
     // Load session data when screen opens
     LaunchedEffect(sessionId) {
@@ -146,11 +152,26 @@ fun EditSessionScreen(
                     onPriceChanged = viewModel::updatePricePaid,
                     onLocationChanged = viewModel::updateLocation,
                     onHoursUntilBreakChanged = viewModel::updateHoursUntilBreak,
-                    onHoursUntilDeadChanged = viewModel::updateHoursUntilDead,
+                    onShowDatePicker = { showDatePicker = true },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
         }
+    }
+    
+    // Date Picker Dialog
+    if (showDatePicker) {
+        EditDatePickerDialog(
+            onDateSelected = { selectedDateMillis ->
+                selectedDateMillis?.let { millis ->
+                    val instant = Instant.fromEpochMilliseconds(millis)
+                    viewModel.updateDateStrung(instant)
+                }
+                showDatePicker = false
+            },
+            onDismiss = { showDatePicker = false },
+            initialDate = uiState.dateStrung
+        )
     }
 }
 
@@ -166,7 +187,7 @@ private fun EditSessionContent(
     onPriceChanged: (String) -> Unit,
     onLocationChanged: (String) -> Unit,
     onHoursUntilBreakChanged: (String) -> Unit,
-    onHoursUntilDeadChanged: (String) -> Unit,
+    onShowDatePicker: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -179,7 +200,8 @@ private fun EditSessionContent(
             SessionFormCard(title = "Date") {
                 DateField(
                     date = uiState.dateStrung,
-                    onDateChanged = onDateChanged
+                    onDateChanged = onDateChanged,
+                    onShowDatePicker = onShowDatePicker
                 )
             }
         }
@@ -235,9 +257,7 @@ private fun EditSessionContent(
             SessionFormCard(title = "Usage Tracking") {
                 UsageTrackingSection(
                     hoursUntilBreakInput = uiState.hoursUntilBreakInput,
-                    hoursUntilDeadInput = uiState.hoursUntilDeadInput,
                     onHoursUntilBreakChanged = onHoursUntilBreakChanged,
-                    onHoursUntilDeadChanged = onHoursUntilDeadChanged,
                     validationErrors = uiState.validationErrors
                 )
             }
@@ -278,10 +298,10 @@ private fun SessionFormCard(
 @Composable
 private fun DateField(
     date: Instant,
-    onDateChanged: (Instant) -> Unit
+    onDateChanged: (Instant) -> Unit,
+    onShowDatePicker: () -> Unit
 ) {
-    val localDate = date.toLocalDateTime(TimeZone.currentSystemDefault())
-    val dateString = "${localDate.dayOfMonth}/${localDate.monthNumber}/${localDate.year}"
+    val dateString = DateFormatter.formatDateWithYear(date)
     
     OutlinedTextField(
         value = dateString,
@@ -290,13 +310,15 @@ private fun DateField(
         modifier = Modifier.fillMaxWidth(),
         readOnly = true,
         trailingIcon = {
-            Text(
-                text = "📅",
-                style = MaterialTheme.typography.bodyLarge
-            )
+            IconButton(onClick = onShowDatePicker) {
+                Text(
+                    text = "📅",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         },
         supportingText = {
-            Text("Tap to change date (Date picker coming soon)")
+            Text("Tap to select a different date")
         }
     )
 }
@@ -526,9 +548,7 @@ private fun SessionDetailsSection(
 @Composable
 private fun UsageTrackingSection(
     hoursUntilBreakInput: String,
-    hoursUntilDeadInput: String,
     onHoursUntilBreakChanged: (String) -> Unit,
-    onHoursUntilDeadChanged: (String) -> Unit,
     validationErrors: Set<EditSessionValidationError>
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -547,21 +567,35 @@ private fun UsageTrackingSection(
                 }
             }
         )
-        
-        OutlinedTextField(
-            value = hoursUntilDeadInput,
-            onValueChange = onHoursUntilDeadChanged,
-            label = { Text("Hours Until Dead") },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            isError = EditSessionValidationError.HOURS_UNTIL_DEAD_INVALID in validationErrors,
-            supportingText = {
-                when {
-                    EditSessionValidationError.HOURS_UNTIL_DEAD_INVALID in validationErrors -> 
-                        Text("Please enter a valid number of hours")
-                    else -> Text("How many hours until the strings felt dead? (optional)")
-                }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EditDatePickerDialog(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit,
+    initialDate: Instant
+) {
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = initialDate.toEpochMilliseconds()
+    )
+    
+    androidx.compose.material3.DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(
+                onClick = { onDateSelected(datePickerState.selectedDateMillis) }
+            ) {
+                Text("OK")
             }
-        )
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
     }
 }
